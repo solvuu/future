@@ -196,10 +196,14 @@ _build/META:
 install: _build/META uninstall
   ocamlfind install $(PROJECT) \
     _build/META \
-    _build/main/future.cm[aiox] \
-    _build/main/future.cmxa \
-    _build/{std,lwt,async}/future_*.cm[aiox] \
-    _build/{std,lwt,async}/future_*.cmxa
+    _build/main/future.a \
+    _build/main/future.cm[aix] \
+    _build/main/future.cmx[as] \
+    _build/main/future.ml \
+    _build/{std,lwt,async}/future_*.a \
+    _build/{std,lwt,async}/future_*.cm[aix] \
+    _build/{std,lwt,async}/future_*.cmx[as] \
+    _build/{std,lwt,async}/future_*.ml[i]
 
 uninstall:
   ocamlfind remove $(PROJECT)
