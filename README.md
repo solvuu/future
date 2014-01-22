@@ -1,4 +1,5 @@
-Future - Abstraction over Stdlib, Lwt, and Async.
+### Future - Abstraction over Stdlib, Lwt, and Async.
+[![Build Status](https://travis-ci.org/agarwal/future.png?branch=master)](https://travis-ci.org/agarwal/future)
 
 OCaml has two concurrency libraries in wide use: Lwt and Async. When
 writing your own library, the question is which of the two your API
