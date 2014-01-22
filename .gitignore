@@ -1,0 +1,9 @@
+.ocamlinit
+_build/
+/.omakedb
+/.omakedb.lock
+/OMakeroot.omc
+/configure.om
+/configure.omc
+*~
+tmp/

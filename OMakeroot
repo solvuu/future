@@ -1,0 +1,205 @@
+open build/OCaml
+DefineCommandVars()
+
+.PHONY: lib lib_std lib_lwt lib_async \
+        install uninstall \
+        clean distclean \
+        print_config
+
+clean:
+  rm -rf _build
+
+distclean: clean
+  rm -rf OMakefile.omc OMakeroot.omc .omakedb .omakedb.lock configure.omc
+
+################################################################################
+# General Project Information
+PROJECT = future
+VERSION = 0.1-dev
+DESCRIPTION = Abstraction over Stdlib, Lwt, and Async.
+
+LIB_NAME = $(PROJECT)
+LIB_MODULES[] = future
+LIB_PACKAGES = core
+
+LIB_STD_NAME = $(PROJECT)_std
+LIB_STD_MODULES[] = future_std
+LIB_STD_PACKAGES = $(LIB_PACKAGES) cfstream
+
+LIB_LWT_NAME = $(PROJECT)_lwt
+LIB_LWT_MODULES[] = future_lwt
+LIB_LWT_PACKAGES = $(LIB_PACKAGES) lwt lwt.syntax
+
+LIB_ASYNC_NAME = $(PROJECT)_async
+LIB_ASYNC_MODULES[] = future_async
+LIB_ASYNC_PACKAGES = $(LIB_PACKAGES) async
+
+
+################################################################################
+# Directory and File Names
+CONFIG_FILE = configure.om
+DEFAULT_PREFIX = _build/usr
+
+$(CONFIG_FILE):
+  if $(not $(file-exists $(CONFIG_FILE)))
+    echo "Generating default $(CONFIG_FILE). Change as desired."
+    echo "COMPILE_LIB_STD = true" > $(CONFIG_FILE)
+    echo "COMPILE_LIB_LWT = true" >> $(CONFIG_FILE)
+    echo "COMPILE_LIB_ASYNC = true" >> $(CONFIG_FILE)
+    echo "PREFIX = $(DEFAULT_PREFIX)" >> $(CONFIG_FILE)
+  else
+    echo "$@ exists. Will not change."
+
+if $(file-exists $(CONFIG_FILE))
+  include $(CONFIG_FILE)
+  export
+
+DefineCommandVars()
+
+if $(not $(defined PREFIX))
+  PREFIX = $(DEFAULT_PREFIX)
+  export
+
+if $(not $(defined DOCDIR))
+  DOCDIR = $(PREFIX)/doc
+  export
+
+if $(not $(defined COMPILE_LIB_STD))
+  COMPILE_LIB_STD = true
+  export
+
+if $(not $(defined COMPILE_LIB_LWT))
+  COMPILE_LIB_LWT = true
+  export
+
+if $(not $(defined COMPILE_LIB_ASYNC))
+  COMPILE_LIB_ASYNC = true
+  export
+
+print_config:
+  echo "COMPILE_LIB_STD: $(COMPILE_LIB_STD)"
+  echo "COMPILE_LIB_LWT: $(COMPILE_LIB_LWT)"
+  echo "COMPILE_LIB_ASYNC: $(COMPILE_LIB_ASYNC)"
+  echo "PREFIX: $(PREFIX)"
+  echo "DOCDIR: $(DOCDIR)"
+
+
+################################################################################
+# Build Parameters
+USE_OCAMLFIND = true
+if $(not $(OCAMLFIND_EXISTS))
+  eprintln(This project requires ocamlfind, but it was not found.)
+  eprintln(You need to install ocamlfind and run "omake --configure".)
+  exit 1
+
+NATIVE_ENABLED = $(OCAMLOPT_EXISTS)
+BYTE_ENABLED = $(OCAMLC_EXISTS)
+
+OCAMLFLAGS = -bin-annot -annot -warn-error P -thread
+OCAMLCFLAGS =
+OCAMLOPTFLAGS =
+OCAML_LINK_FLAGS =
+OCAML_BYTE_LINK_FLAGS =
+OCAML_NATIVE_LINK_FLAGS =
+OCAMLFINDFLAGS =
+
+
+################################################################################
+# Sub-directories
+.SUBDIRS: .
+  mkdir -p _build/main
+  mkdir -p _build/std
+  mkdir -p _build/lwt
+  mkdir -p _build/async
+  vmount(-l, src/, _build/main)
+  vmount(-l, src/, _build/std)
+  vmount(-l, src/, _build/lwt)
+  vmount(-l, src/, _build/async)
+
+  ##############################################################################
+  # Main Library
+  .SUBDIRS: _build/main
+    OCAMLPACKS[] = $(LIB_PACKAGES)
+    lib: $(OCamlLibrary $(LIB_NAME), $(LIB_MODULES))
+    .DEFAULT: lib
+
+  ##############################################################################
+  # Std Library
+  .SUBDIRS: _build/std
+    OCAMLPACKS[] = $(LIB_STD_PACKAGES)
+    OCAML_LIBS = ../main/future
+    lib_std: $(OCamlLibrary $(LIB_STD_NAME), $(LIB_STD_MODULES))
+    if $(COMPILE_LIB_STD)
+      echo "compiling $(LIB_STD_NAME) library"
+      .DEFAULT: lib_std
+
+  ##############################################################################
+  # Lwt Library
+  .SUBDIRS: _build/lwt
+    OCAMLPACKS[] = $(LIB_LWT_PACKAGES)
+    OCAMLFINDFLAGS = -syntax camlp4o
+    OCAML_LIBS = ../main/future
+    lib_lwt: $(OCamlLibrary $(LIB_LWT_NAME), $(LIB_LWT_MODULES))
+    if $(COMPILE_LIB_LWT)
+      echo "compiling $(LIB_LWT_NAME) library"
+      .DEFAULT: lib_lwt
+
+  ##############################################################################
+  # Async Library
+  .SUBDIRS: _build/async
+    OCAMLPACKS[] = $(LIB_ASYNC_PACKAGES)
+    OCAML_LIBS = ../main/future
+    lib_async: $(OCamlLibrary $(LIB_ASYNC_NAME), $(LIB_ASYNC_MODULES))
+    if $(COMPILE_LIB_ASYNC)
+      echo "compiling $(LIB_ASYNC_NAME) library"
+      .DEFAULT: lib_async
+
+
+################################################################################
+# OCamlfind Support
+
+_build/META:
+  echo "description = \"$(DESCRIPTION)\"" > $@
+  echo "version = \"$(VERSION)\"" >> $@
+  echo "requires = \"$(LIB_PACKAGES)\"" >> $@
+  echo "archive(byte) = \"$(LIB_NAME).cma\"" >> $@
+  echo "archive(native) = \"$(LIB_NAME).cmxa\"" >> $@
+  echo "exists_if = \"$(LIB_NAME).cma\"" >> $@
+  echo "" >> $@
+  echo "package \"std\" (" >> $@
+  echo "  description = \"$(DESCRIPTION)\"" >> $@
+  echo "  version = \"$(VERSION)\"" >> $@
+  echo "  requires = \"$(LIB_STD_PACKAGES)\"" >> $@
+  echo "  archive(byte) = \"$(LIB_STD_NAME).cma\"" >> $@
+  echo "  archive(native) = \"$(LIB_STD_NAME).cmxa\"" >> $@
+  echo "  exists_if = \"$(LIB_STD_NAME).cma\"" >> $@
+  echo ")" >> $@
+  echo "" >> $@
+  echo "package \"lwt\" (" >> $@
+  echo "  description = \"$(DESCRIPTION)\"" >> $@
+  echo "  version = \"$(VERSION)\"" >> $@
+  echo "  requires = \"$(LIB_LWT_PACKAGES)\"" >> $@
+  echo "  archive(byte) = \"$(LIB_LWT_NAME).cma\"" >> $@
+  echo "  archive(native) = \"$(LIB_LWT_NAME).cmxa\"" >> $@
+  echo "  exists_if = \"$(LIB_LWT_NAME).cma\"" >> $@
+  echo ")" >> $@
+  echo "" >> $@
+  echo "package \"async\" (" >> $@
+  echo "  description = \"$(DESCRIPTION)\"" >> $@
+  echo "  version = \"$(VERSION)\"" >> $@
+  echo "  requires = \"$(LIB_ASYNC_PACKAGES)\"" >> $@
+  echo "  archive(byte) = \"$(LIB_ASYNC_NAME).cma\"" >> $@
+  echo "  archive(native) = \"$(LIB_ASYNC_NAME).cmxa\"" >> $@
+  echo "  exists_if = \"$(LIB_ASYNC_NAME).cma\"" >> $@
+  echo ")" >> $@
+
+install: _build/META uninstall
+  ocamlfind install $(PROJECT) \
+    _build/META \
+    _build/main/future.cm[aiox] \
+    _build/main/future.cmxa \
+    _build/{std,lwt,async}/future_*.cm[aiox] \
+    _build/{std,lwt,async}/future_*.cmxa
+
+uninstall:
+  ocamlfind remove $(PROJECT)
