@@ -13,6 +13,7 @@ let raise = `Use_fail_instead
 module Pipe = struct
   include Pipe
   let read r = read r
+  let map = map
   let fold r ~init ~f = fold r ~init ~f
 end
 

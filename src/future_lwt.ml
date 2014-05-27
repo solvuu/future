@@ -50,6 +50,8 @@ module Pipe = struct
     | Some x -> `Ok x
     | None -> `Eof
 
+  let map r ~f = Lwt_stream.map f r
+
   let fold r ~init ~f =
     Lwt_stream.fold_s (fun a accum -> f accum a) r init
 end

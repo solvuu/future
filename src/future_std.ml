@@ -40,6 +40,8 @@ module Pipe = struct
     | Some x -> `Ok x
     | None -> `Eof
 
+  let map = Stream.map
+
   let fold = Stream.fold
 end
 
