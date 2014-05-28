@@ -54,6 +54,9 @@ module Pipe = struct
 
   let fold r ~init ~f =
     Lwt_stream.fold_s (fun a accum -> f accum a) r init
+
+  let iter r ~f = Lwt_stream.iter_s f r
+
 end
 
 module Reader = struct
@@ -80,4 +83,11 @@ module Reader = struct
     )
 
   let lines ic = read_all ic read_line
+end
+
+module Writer = struct
+  type t = Lwt_io.output_channel
+  let write = Lwt_io.write
+  let write_char = Lwt_io.write_char
+  let write_line = Lwt_io.write_line
 end

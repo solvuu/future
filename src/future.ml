@@ -43,6 +43,12 @@ module type S = sig
       init:'accum ->
       f:('accum -> 'a -> 'accum Deferred.t) ->
       'accum Deferred.t
+
+    val iter :
+      'a Reader.t ->
+      f:('a -> unit Deferred.t) ->
+      unit Deferred.t
+
   end
 
   module Reader : sig
@@ -63,6 +69,17 @@ module type S = sig
     val read_line : t -> string Read_result.t Deferred.t
     val read_all : t -> (t -> 'a Read_result.t Deferred.t) -> 'a Pipe.Reader.t
     val lines : t -> string Pipe.Reader.t
+  end
+
+  module Writer : sig
+    type t
+
+    (** Following functions returned a Deferred.t, while in Async they
+        return unit. *)
+    val write : t -> string -> unit Deferred.t
+    val write_char : t -> char -> unit Deferred.t
+    val write_line : t -> string -> unit Deferred.t
+
   end
 
 end

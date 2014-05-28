@@ -41,8 +41,8 @@ module Pipe = struct
     | None -> `Eof
 
   let map = Stream.map
-
   let fold = Stream.fold
+  let iter = Stream.iter
 end
 
 module Reader = struct
@@ -68,4 +68,11 @@ module Reader = struct
     )
 
   let lines ic = read_all ic read_line
+end
+
+module Writer = struct
+  type t = out_channel
+  let write = Out_channel.output_string
+  let write_char = Out_channel.output_char
+  let write_line t s = Out_channel.output_string t s; Out_channel.newline t
 end
