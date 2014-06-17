@@ -8,7 +8,7 @@ module Deferred = struct
     type 'a t = 'a Lwt.t
     let return = Lwt.return
     let bind = Lwt.bind
-    let map m ~f = Lwt.map f m
+    let map = `Custom (fun m ~f -> Lwt.map f m)
   end)
 
   module Result = struct
@@ -24,10 +24,10 @@ module Deferred = struct
         | Error _ as x -> Lwt.return x
       )
 
-      let map m ~f = Lwt.map (function
+      let map = `Custom (fun m ~f -> Lwt.map (function
         | Ok x -> Ok (f x)
         | Error _ as x -> x
-      ) m
+      ) m)
     end)
   end
 end
