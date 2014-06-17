@@ -8,7 +8,7 @@ module Deferred = struct
     type 'a t = 'a
     let return x = x
     let bind m f = f m
-    let map m ~f = f m
+    let map = `Custom (fun m ~f -> f m)
   end)
 
   module Result = struct
@@ -18,7 +18,7 @@ module Deferred = struct
       type ('a, 'b) t = ('a, 'b) Result.t
       let return = Result.return
       let bind = Result.bind
-      let map = Result.map
+      let map = `Custom Result.map
     end)
   end
 end
