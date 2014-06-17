@@ -1,5 +1,4 @@
-OPAM_DEPENDS="ocamlfind omake core.$CORE_VERSION cfstream lwt async"
-
+# install Ubuntu packages
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
 3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
@@ -10,20 +9,21 @@ case "$OCAML_VERSION,$OPAM_VERSION" in
 *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
 esac
 
-echo "yes" | sudo add-apt-repository ppa:$ppa
+sudo add-apt-repository -y ppa:$ppa
 sudo apt-get update -qq
-sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam
+sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra aspcud opam
+
+# configure and view settings
 export OPAMYES=1
-export OPAMVERBOSE=1
-echo OCaml version
 ocaml -version
-echo OPAM versions
 opam --version
 opam --git-version
 
-opam init 
-opam update
-
-opam install ${OPAM_DEPENDS}
+# install OCaml packages
+opam init
 eval `opam config env`
+opam install ocamlfind omake core cfstream lwt async
+
+# run tests
+cd $TRAVIS_BUILD_DIR
 omake
