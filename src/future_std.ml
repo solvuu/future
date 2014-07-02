@@ -52,6 +52,11 @@ module Reader = struct
 
   type t = in_channel
 
+  let open_file ?buf_len file =
+    In_channel.create file
+
+  let close = In_channel.close
+
   let with_file ?buf_len file ~f =
     match buf_len with
     | None | Some _ -> In_channel.with_file file ~f
@@ -72,6 +77,10 @@ end
 
 module Writer = struct
   type t = out_channel
+
+  let with_file ?perm ?append file ~f =
+    Out_channel.with_file ?perm ?append file ~f
+
   let write = Out_channel.output_string
   let write_char = Out_channel.output_char
   let write_line t s = Out_channel.output_string t s; Out_channel.newline t

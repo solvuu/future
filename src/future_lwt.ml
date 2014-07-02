@@ -66,6 +66,11 @@ module Reader = struct
 
   type t = Lwt_io.input_channel
 
+  let open_file ?buf_len file =
+    Lwt_io.open_file ?buffer_size:buf_len ~mode:Lwt_io.input file
+
+  let close = Lwt_io.close
+
   let with_file ?buf_len file ~f =
     Lwt_io.with_file ?buffer_size:buf_len ~mode:Lwt_io.input file f
 
@@ -87,6 +92,14 @@ end
 
 module Writer = struct
   type t = Lwt_io.output_channel
+
+  let with_file ?perm ?(append=false) file ~f =
+    let flags = match append with
+      | true ->  Unix.([O_WRONLY; O_CREAT; O_APPEND])
+      | false -> Unix.([O_WRONLY; O_CREAT; O_TRUNC])
+    in
+    Lwt_io.with_file ~flags ?perm ~mode:Lwt_io.output file f
+
   let write = Lwt_io.write
   let write_char = Lwt_io.write_char
   let write_line = Lwt_io.write_line

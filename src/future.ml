@@ -60,6 +60,12 @@ module type S = sig
 
     (** Difference from Async: implementations should try to use
         [buf_len] but are not required to. *)
+    val open_file : ?buf_len:int -> string -> t Deferred.t
+
+    val close : t -> unit Deferred.t
+
+    (** Difference from Async: implementations should try to use
+        [buf_len] but are not required to. *)
     val with_file :
       ?buf_len:int ->
       string ->
@@ -73,6 +79,13 @@ module type S = sig
 
   module Writer : sig
     type t
+
+    val with_file
+      : ?perm:int
+      -> ?append:bool
+      -> string
+      -> f:(t -> 'a Deferred.t)
+      -> 'a Deferred.t
 
     (** Following functions returned a Deferred.t, while in Async they
         return unit. *)

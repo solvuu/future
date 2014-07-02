@@ -20,11 +20,13 @@ end
 
 module Reader = struct
   include Reader
+  let open_file ?buf_len file = open_file ?buf_len file
   let with_file ?buf_len file ~f = with_file ?buf_len file ~f
 end
 
 module Writer = struct
   include Writer
+  let with_file ?perm ?append file ~f = with_file ?perm ?append file ~f
   let write t x = write t x; Deferred.unit
   let write_char t x = write_char t x; Deferred.unit
   let write_line t x = write_line t x; Deferred.unit
