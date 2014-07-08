@@ -16,7 +16,7 @@ remove: [
 depends: [
   "ocamlfind"
   "omake"
-  "core" {>= "111.13.00"}
+  "core" {>= "111.17.00"}
 ]
 
 depopts: [
