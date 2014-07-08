@@ -22,7 +22,7 @@ opam --git-version
 # install OCaml packages
 opam init
 eval `opam config env`
-opam install ocamlfind omake core cfstream lwt async
+opam install ocamlfind omake core lwt async
 
 # run tests
 cd $TRAVIS_BUILD_DIR
