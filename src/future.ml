@@ -34,8 +34,6 @@ module type S = sig
       type 'a t
     end
 
-    val read : 'a Reader.t -> [ `Eof | `Ok of 'a ] Deferred.t
-
     val map : 'a Reader.t -> f:('a -> 'b) -> 'b Reader.t
 
     val fold :

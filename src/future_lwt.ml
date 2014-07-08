@@ -45,11 +45,6 @@ module Pipe = struct
     type 'a t = 'a Lwt_stream.t
   end
 
-  let read r =
-    Lwt_stream.get r >>| function
-    | Some x -> `Ok x
-    | None -> `Eof
-
   let map r ~f = Lwt_stream.map f r
 
   let fold r ~init ~f =

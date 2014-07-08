@@ -16,7 +16,7 @@ remove: [
 depends: [
   "ocamlfind"
   "omake"
-  "core"
+  "core" {>= "111.13.00"}
   "cfstream"
 ]
 

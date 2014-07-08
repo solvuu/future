@@ -1,5 +1,4 @@
 open Core.Std
-open CFStream
 
 module Deferred = struct
   type 'a t = 'a
@@ -33,16 +32,12 @@ let raise = `Use_fail_instead
 
 module Pipe = struct
   module Reader = struct
-    type 'a t = 'a Stream.t
+    type 'a t = 'a Sequence.t
   end
 
-  let read r = match Stream.next r with
-    | Some x -> `Ok x
-    | None -> `Eof
-
-  let map = Stream.map
-  let fold = Stream.fold
-  let iter = Stream.iter
+  let map = Sequence.map
+  let fold = Sequence.fold
+  let iter = Sequence.iter
 end
 
 module Reader = struct
@@ -67,9 +62,10 @@ module Reader = struct
     | None -> `Eof
 
   let read_all ic read_one =
-    Stream.from (fun _ -> match read_one ic with
-    | `Ok x -> Some x
-    | `Eof -> In_channel.close ic; None
+    Sequence.unfold ~init:() ~f:(fun () ->
+      match read_one ic with
+      | `Ok x -> Some (x, ())
+      | `Eof -> In_channel.close ic; None
     )
 
   let lines ic = read_all ic read_line
