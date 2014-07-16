@@ -34,6 +34,19 @@ module type S = sig
       type 'a t
     end
 
+    val read : 'a Reader.t -> [ `Eof | `Ok of 'a ] Deferred.t
+
+    (** Discard one item from the pipe. Do nothing if pipe is already
+        fully consumed. Difference from Async: This function is not
+        defined. *)
+    val junk : 'a Reader.t -> unit Deferred.t
+
+    (** Like [read] but doesn't consume the item. Difference from
+        Async: This function is not defined. We don't call this
+        function [peek] because that is already another function in
+        Async, which has different semantics. *)
+    val peek_deferred : 'a Reader.t -> [ `Eof | `Ok of 'a ] Deferred.t
+
     val map : 'a Reader.t -> f:('a -> 'b) -> 'b Reader.t
 
     val fold :

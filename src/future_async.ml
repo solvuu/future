@@ -12,6 +12,24 @@ let raise = `Use_fail_instead
 
 module Pipe = struct
   include Pipe
+
+  let read r = read r
+
+  let junk r =
+    read r >>= function
+    | `Ok _ | `Eof -> Deferred.unit
+
+  (* Author: Stephen Weeks. See here:
+     https://groups.google.com/forum/#!topic/ocaml-core/6vskwLlFnS0 *)
+  let rec peek_deferred r =
+    match peek r with
+    | Some x -> return (`Ok x)
+    | None ->
+      values_available r
+      >>= function
+      | `Eof -> return `Eof
+      | `Ok -> peek_deferred r
+
   let map = map
   let fold r ~init ~f = fold r ~init ~f
   let iter r ~f = iter r ~f

@@ -36,6 +36,16 @@ module Pipe = struct
     type 'a t = 'a Stream.t
   end
 
+  let read r = match Stream.next r with
+    | Some x -> `Ok x
+    | None -> `Eof
+
+  let junk = Stream.junk
+
+  let peek_deferred r = match Stream.peek r with
+    | Some x -> `Ok x
+    | None -> `Eof
+
   let map = Stream.map
   let fold = Stream.fold
   let iter = Stream.iter
