@@ -13,6 +13,8 @@ module type S = sig
   module Deferred : sig
     include Monad.S
 
+    val unit : unit t
+
     module Result : Monad.S2
       with type ('a, 'b) t = ('a, 'b) Result.t t
 

@@ -16,6 +16,8 @@ module Deferred = struct
     let map = `Custom (fun m ~f -> f m)
   end)
 
+  let unit = ()
+
   module Result = struct
     type ('a, 'b) t = ('a, 'b) Result.t
 
