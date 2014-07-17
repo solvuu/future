@@ -1,6 +1,11 @@
 open Core.Std
 open Lwt
 
+module Deferred_intf = struct
+  type how = [ `Parallel | `Sequential ]
+end
+open Deferred_intf
+
 module Deferred = struct
   type 'a t = 'a Lwt.t
 
@@ -30,6 +35,28 @@ module Deferred = struct
       ) m)
     end)
   end
+
+  module List = struct
+
+    let fold l ~init ~f = Lwt_list.fold_left_s f init l
+
+    let iter ?(how = `Sequential) l ~f =
+      match how with
+      | `Sequential -> Lwt_list.iter_s f l
+      | `Parallel -> Lwt_list.iter_p f l
+
+    let map ?(how = `Sequential) l ~f =
+      match how with
+      | `Sequential -> Lwt_list.map_s f l
+      | `Parallel -> Lwt_list.map_p f l
+
+    let filter ?(how = `Sequential) l ~f =
+      match how with
+      | `Sequential -> Lwt_list.filter_s f l
+      | `Parallel -> Lwt_list.filter_p f l
+
+  end
+
 end
 
 let return = Deferred.return

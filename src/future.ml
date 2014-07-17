@@ -4,11 +4,25 @@
 open Core.Std
 
 module type S = sig
+
+  module Deferred_intf : sig
+    type how = [ `Parallel | `Sequential ]
+  end
+  open Deferred_intf
+
   module Deferred : sig
     include Monad.S
 
     module Result : Monad.S2
       with type ('a, 'b) t = ('a, 'b) Result.t t
+
+    module List : sig
+      val fold : 'a list -> init:'b -> f:('b -> 'a -> 'b t) -> 'b t
+      val iter : ?how:how -> 'a list -> f:('a -> unit t) -> unit t
+      val map : ?how:how -> 'a list -> f:('a -> 'b t) -> 'b list t
+      val filter : ?how:how -> 'a list -> f:('a -> bool t) -> 'a list t
+    end
+
   end
 
   val return : 'a -> 'a Deferred.t

@@ -1,6 +1,11 @@
 open Core.Std
 open CFStream
 
+module Deferred_intf = struct
+  type how = [ `Parallel | `Sequential ]
+end
+open Deferred_intf
+
 module Deferred = struct
   type 'a t = 'a
 
@@ -21,6 +26,14 @@ module Deferred = struct
       let map = `Custom Result.map
     end)
   end
+
+  module List = struct
+    let fold = List.fold
+    let iter ?(how:_) l ~f = List.iter l ~f
+    let map ?(how:_) l ~f = List.map l ~f
+    let filter ?(how:_) l ~f = List.filter l ~f
+  end
+
 end
 
 let return = Deferred.return

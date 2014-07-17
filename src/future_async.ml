@@ -1,5 +1,6 @@
 open Async.Std
 
+module Deferred_intf = Async_kernel.Deferred_intf
 module Deferred = Deferred
 
 let return = return
