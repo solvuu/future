@@ -17,6 +17,7 @@ depends: [
   "ocamlfind"
   "omake"
   "core" {>= "111.17.00"}
+  "cfstream"
 ]
 
 depopts: [
