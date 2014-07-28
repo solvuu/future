@@ -199,8 +199,8 @@ install: _build/META uninstall
     _build/main/future.a \
     _build/main/future.cm[aix] \
     _build/main/future.cmx[as] \
-    _build/main/future.ml \
-    _build/{std,lwt,async}/future_*.ml[i] \
+    src/future.ml \
+    src/future_*.ml[i] \
     -optional \
       _build/{std,lwt,async}/future_*.a \
       _build/{std,lwt,async}/future_*.cm[aix] \
