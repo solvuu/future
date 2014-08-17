@@ -1,0 +1,34 @@
+opam-version: "1.2"
+version: "99999.0.0"
+maintainer: "agarwal1975@gmail.com"
+authors: ["Solvuu LLC"]
+license: "ISC"
+homepage: "https://github.com/agarwal/future"
+bug-reports: "https://github.com/agarwal/future/issues"
+
+build: [
+  "omake" "-j%{jobs}%"
+    "COMPILE_LIB_STD=true"
+    "COMPILE_LIB_LWT=%{lwt:installed}%"
+    "COMPILE_LIB_ASYNC=%{async:installed}%"
+]
+
+install: [
+  "omake" "install"
+]
+
+remove: [
+  ["omake" "uninstall"]
+]
+
+depends: [
+  "ocamlfind" {build}
+  "omake" {build}
+  "core" {>= "111.17.00"}
+  "cfstream"
+]
+
+depopts: [
+  "lwt"
+  "async"
+]
