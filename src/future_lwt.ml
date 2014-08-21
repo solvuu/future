@@ -59,6 +59,44 @@ module Deferred = struct
 
   end
 
+  module Or_error = struct
+    module List = struct
+
+      let map ?(how = `Sequential) l ~f =
+        let map = match how with
+          | `Sequential -> Lwt_list.map_s
+          | `Parallel -> Lwt_list.map_p
+        in
+        let module M = struct
+          exception E of Error.t
+          let helper () = map (fun x ->
+            f x >>| function
+            | Ok x -> x
+            | Error e -> raise (E e)
+          ) l
+        end in
+        try (M.helper() >>| fun x -> Ok x)
+        with M.E e -> return (Error e)
+
+      let iter ?(how = `Sequential) l ~f =
+        let iter = match how with
+          | `Sequential -> Lwt_list.iter_s
+          | `Parallel -> Lwt_list.iter_p
+        in
+        let module M = struct
+          exception E of Error.t
+          let helper () = iter (fun x ->
+            f x >>| function
+            | Ok () -> ()
+            | Error e -> raise (E e)
+          ) l
+        end in
+        try (M.helper() >>| fun () -> Ok ())
+        with M.E e -> return (Error e)
+
+    end
+  end
+
 end
 
 let return = Deferred.return
@@ -68,6 +106,10 @@ let (>>=?) = Deferred.Result.(>>=)
 let (>>|?) = Deferred.Result.(>>|)
 let fail = Lwt.fail
 let raise = `Use_fail_instead
+
+module In_thread = struct
+  let run f = Lwt_preemptive.detach f ()
+end
 
 module Pipe = struct
   module Reader = struct
@@ -124,6 +166,18 @@ module Reader = struct
     )
 
   let lines ic = read_all ic read_line
+
+  let contents ic =
+    Lwt_io.read ic >>= fun ans ->
+    Lwt_io.close ic >>= fun () ->
+    return ans
+
+  let file_contents file = with_file file Lwt_io.read
+
+  let file_lines file =
+    Lwt_io.lines_of_file file
+    |> Lwt_stream.to_list
+
 end
 
 module Writer = struct
@@ -139,4 +193,32 @@ module Writer = struct
   let write = Lwt_io.write
   let write_char = Lwt_io.write_char
   let write_line = Lwt_io.write_line
+end
+
+module Sys = struct
+  include Sys
+  let file_exists x = Lwt_preemptive.detach file_exists x
+end
+
+module Unix = struct
+
+  type file_perm = Unix.file_perm
+
+  (* Lwt doesn't provide a non-blocking version of getcwd because
+     presumably it is doesn't block. However, Async does because it
+     claims it could block. See
+     https://sympa.inria.fr/sympa/arc/ocsigen/2013-09/msg00003.html.
+
+     If we agreed it is non-blocking, then could implement as:
+
+     let getcwd () = return (Unix.getcwd())
+
+     However, I think Async is right, so I wrap it in Lwt's
+     detach. *)
+  let getcwd () = Lwt_preemptive.detach Unix.getcwd ()
+
+  let rename ~src ~dst = Lwt_unix.rename src dst
+
+  let getpid = Unix.getpid
+
 end

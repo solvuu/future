@@ -25,6 +25,24 @@ module type S = sig
       val filter : ?how:how -> 'a list -> f:('a -> bool t) -> 'a list t
     end
 
+    module Or_error : sig
+      module List : sig
+
+        val map
+          :  ?how:Deferred_intf.how
+          -> 'a list
+          -> f:('a -> 'b Or_error.t t)
+          -> 'b list Or_error.t t
+
+        val iter
+          :  ?how:Deferred_intf.how
+          -> 'a list
+          -> f:('a -> unit Or_error.t t)
+          -> unit Or_error.t t
+
+      end
+    end
+
   end
 
   val return : 'a -> 'a Deferred.t
@@ -44,6 +62,10 @@ module type S = sig
   (** Difference from Async: Use [fail] instead of [raise]. *)
   val fail : exn -> 'a Deferred.t
   val raise : [> `Use_fail_instead ]
+
+  module In_thread : sig
+    val run : (unit -> 'a) -> 'a Deferred.t
+  end
 
   module Pipe : sig
     module Reader : sig
@@ -102,6 +124,9 @@ module type S = sig
     val read_line : t -> string Read_result.t Deferred.t
     val read_all : t -> (t -> 'a Read_result.t Deferred.t) -> 'a Pipe.Reader.t
     val lines : t -> string Pipe.Reader.t
+    val contents : t -> string Deferred.t
+    val file_contents : string -> string Deferred.t
+    val file_lines : string -> string list Deferred.t
   end
 
   module Writer : sig
@@ -120,6 +145,18 @@ module type S = sig
     val write_char : t -> char -> unit Deferred.t
     val write_line : t -> string -> unit Deferred.t
 
+  end
+
+  module Sys : sig
+    val getenv : string -> string option
+    val file_exists : string -> [ `No | `Unknown | `Yes ] Deferred.t
+  end
+
+  module Unix : sig
+    type file_perm = Unix.file_perm
+    val getcwd : unit -> string Deferred.t
+    val rename : src:string -> dst:string -> unit Deferred.t
+    val getpid : unit -> Pid.t
   end
 
 end

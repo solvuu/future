@@ -36,6 +36,36 @@ module Deferred = struct
     let filter ?(how:_) l ~f = List.filter l ~f
   end
 
+  module Or_error = struct
+    module List = struct
+
+      let map ?(how = `Sequential) l ~f =
+        let () = ignore how in
+        let module M = struct
+          exception E of Error.t
+          let helper () = List.map l ~f:(fun x -> match f x with
+            | Ok x -> x
+            | Error e -> raise (E e)
+          )
+        end in
+        try Ok (M.helper())
+        with M.E e -> Error e
+
+      let iter ?(how = `Sequential) l ~f =
+        let () = ignore how in
+        let module M = struct
+          exception E of Error.t
+          let helper () = List.iter l ~f:(fun x -> match f x with
+            | Ok () -> ()
+            | Error e -> raise (E e)
+          )
+        end in
+        try Ok (M.helper())
+        with M.E e -> Error e
+
+    end
+  end
+
 end
 
 let return = Deferred.return
@@ -45,6 +75,10 @@ let (>>=?) = Deferred.Result.(>>=)
 let (>>|?) = Deferred.Result.(>>|)
 let fail = raise
 let raise = `Use_fail_instead
+
+module In_thread = struct
+  let run f = f ()
+end
 
 module Pipe = struct
   module Reader = struct
@@ -95,6 +129,10 @@ module Reader = struct
     )
 
   let lines ic = read_all ic read_line
+  let contents = In_channel.input_all
+  let file_contents = In_channel.read_all
+  let file_lines = In_channel.read_lines
+
 end
 
 module Writer = struct
@@ -106,4 +144,13 @@ module Writer = struct
   let write = Out_channel.output_string
   let write_char = Out_channel.output_char
   let write_line t s = Out_channel.output_string t s; Out_channel.newline t
+end
+
+module Sys = struct
+  include Sys
+  let file_exists x = file_exists x
+end
+
+module Unix = struct
+  include Unix
 end

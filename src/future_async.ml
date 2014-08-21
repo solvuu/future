@@ -11,6 +11,12 @@ let (>>|?) = (>>|?)
 let fail = raise
 let raise = `Use_fail_instead
 
+module In_thread = struct
+  include In_thread
+  let run f = run f
+end
+
+
 module Pipe = struct
   include Pipe
 
@@ -49,3 +55,7 @@ module Writer = struct
   let write_char t x = write_char t x; Deferred.unit
   let write_line t x = write_line t x; Deferred.unit
 end
+
+module Sys = Sys
+
+module Unix = Unix
