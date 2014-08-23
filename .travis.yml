@@ -1,5 +1,5 @@
 language: c
-script: bash -ex bin/travis.sh
+script: ./bin/travis.sh
 
 env:
-  - OCAML_VERSION=4.01.0 OPAM_VERSION=1.1.0
+  - OCAML_VERSION=4.01.0
