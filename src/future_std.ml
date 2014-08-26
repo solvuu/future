@@ -76,6 +76,11 @@ let (>>|?) = Deferred.Result.(>>|)
 let fail = raise
 let raise = `Use_fail_instead
 
+let try_with f =
+  try Ok (f ())
+  with exn -> Error exn
+
+
 module In_thread = struct
   let run f = f ()
 end

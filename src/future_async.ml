@@ -10,6 +10,7 @@ let (>>=?) = (>>=?)
 let (>>|?) = (>>|?)
 let fail = raise
 let raise = `Use_fail_instead
+let try_with f = try_with f
 
 module In_thread = struct
   include In_thread

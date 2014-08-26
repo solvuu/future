@@ -63,6 +63,11 @@ module type S = sig
   val fail : exn -> 'a Deferred.t
   val raise : [> `Use_fail_instead ]
 
+  (** Async supports several extra parameters to this function, which
+      we do not currently support. *)
+  val try_with : (unit -> 'a Deferred.t) -> ('a, exn) Result.t Deferred.t
+
+
   module In_thread : sig
     val run : (unit -> 'a) -> 'a Deferred.t
   end

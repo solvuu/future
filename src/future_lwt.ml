@@ -107,6 +107,12 @@ let (>>|?) = Deferred.Result.(>>|)
 let fail = Lwt.fail
 let raise = `Use_fail_instead
 
+let try_with f =
+  Lwt.catch
+    (fun () -> f () >>| fun x -> Ok x)
+    (fun exn -> return (Error exn))
+
+
 module In_thread = struct
   let run f = Lwt_preemptive.detach f ()
 end
