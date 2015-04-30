@@ -1,0 +1,3 @@
+PKG core async lwt cfstream lwt.ppx core_kernel
+S ./src
+B _build/**

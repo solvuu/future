@@ -28,7 +28,7 @@ LIB_STD_PACKAGES = $(LIB_PACKAGES) cfstream
 
 LIB_LWT_NAME = $(PROJECT)_lwt
 LIB_LWT_MODULES[] = future_lwt
-LIB_LWT_PACKAGES = $(LIB_PACKAGES) lwt lwt.preemptive lwt.syntax
+LIB_LWT_PACKAGES = $(LIB_PACKAGES) lwt lwt.preemptive lwt.ppx
 
 LIB_ASYNC_NAME = $(PROJECT)_async
 LIB_ASYNC_MODULES[] = future_async
@@ -137,7 +137,7 @@ OCAMLFINDFLAGS =
   # Lwt Library
   .SUBDIRS: _build/lwt
     OCAMLPACKS[] = $(LIB_LWT_PACKAGES)
-    OCAMLFINDFLAGS = -syntax camlp4o
+    OCAMLFINDFLAGS =
     OCAML_LIBS = ../main/future
     lib_lwt: $(OCamlLibrary $(LIB_LWT_NAME), $(LIB_LWT_MODULES))
     if $(COMPILE_LIB_LWT)

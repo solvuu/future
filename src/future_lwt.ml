@@ -164,7 +164,7 @@ module Reader = struct
     | None -> `Eof
 
   let read_all ic read_one =
-    Lwt_stream.from (fun () -> match_lwt read_one ic with
+    Lwt_stream.from (fun () -> match%lwt read_one ic with
     | `Ok x -> Lwt.return (Some x)
     | `Eof ->
       Lwt_io.close ic >>= fun () ->
