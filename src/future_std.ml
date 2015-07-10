@@ -154,6 +154,7 @@ end
 module Sys = struct
   include Sys
   let file_exists x = file_exists x
+  let is_file ?follow_symlinks x = is_file ?follow_symlinks x
 end
 
 module Unix = struct

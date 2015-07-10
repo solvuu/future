@@ -155,6 +155,12 @@ module type S = sig
   module Sys : sig
     val getenv : string -> string option
     val file_exists : string -> [ `No | `Unknown | `Yes ] Deferred.t
+
+    val is_file
+      :  ?follow_symlinks:bool
+      -> string
+      -> [ `No | `Unknown | `Yes ] Deferred.t
+
   end
 
   module Unix : sig

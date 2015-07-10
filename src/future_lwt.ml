@@ -204,6 +204,10 @@ end
 module Sys = struct
   include Sys
   let file_exists x = Lwt_preemptive.detach file_exists x
+
+  let is_file ?follow_symlinks x =
+    Lwt_preemptive.detach (is_file ?follow_symlinks) x
+
 end
 
 module Unix = struct
