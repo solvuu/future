@@ -30,5 +30,8 @@ depends: [
 
 depopts: [
   "lwt"
-  "async" {>= "112.35.00"}
+]
+
+conflicts: [
+  "async" {< "112.35.00"}
 ]
