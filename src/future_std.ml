@@ -1,10 +1,7 @@
 open Core.Std
 open CFStream
 
-module Deferred_intf = struct
-  type how = [ `Parallel | `Sequential ]
-end
-open Deferred_intf
+type how = [ `Parallel | `Sequential | `Max_concurrent_jobs of int ]
 
 module Deferred = struct
   type 'a t = 'a

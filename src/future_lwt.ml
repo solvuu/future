@@ -1,10 +1,7 @@
 open Core.Std
 open Lwt
 
-module Deferred_intf = struct
-  type how = [ `Parallel | `Sequential ]
-end
-open Deferred_intf
+type how = [ `Parallel | `Sequential | `Max_concurrent_jobs of int ]
 
 module Deferred = struct
   type 'a t = 'a Lwt.t
@@ -45,16 +42,19 @@ module Deferred = struct
     let iter ?(how = `Sequential) l ~f =
       match how with
       | `Sequential -> Lwt_list.iter_s f l
+      | `Max_concurrent_jobs _
       | `Parallel -> Lwt_list.iter_p f l
 
     let map ?(how = `Sequential) l ~f =
       match how with
       | `Sequential -> Lwt_list.map_s f l
+      | `Max_concurrent_jobs _
       | `Parallel -> Lwt_list.map_p f l
 
     let filter ?(how = `Sequential) l ~f =
       match how with
       | `Sequential -> Lwt_list.filter_s f l
+      | `Max_concurrent_jobs _
       | `Parallel -> Lwt_list.filter_p f l
 
   end
@@ -65,6 +65,7 @@ module Deferred = struct
       let map ?(how = `Sequential) l ~f =
         let map = match how with
           | `Sequential -> Lwt_list.map_s
+	  | `Max_concurrent_jobs _
           | `Parallel -> Lwt_list.map_p
         in
         let module M = struct
@@ -81,6 +82,7 @@ module Deferred = struct
       let iter ?(how = `Sequential) l ~f =
         let iter = match how with
           | `Sequential -> Lwt_list.iter_s
+	  | `Max_concurrent_jobs _
           | `Parallel -> Lwt_list.iter_p
         in
         let module M = struct

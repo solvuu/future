@@ -5,10 +5,10 @@ open Core.Std
 
 module type S = sig
 
-  module Deferred_intf : sig
-    type how = [ `Parallel | `Sequential ]
-  end
-  open Deferred_intf
+  type how = [ `Parallel | `Sequential | `Max_concurrent_jobs of int ]
+  (** [`Max_concurrent_jobs] supported only for Async
+  implementation. The Lwt implementation treats this the same as
+  [`Parallel]. Blocking implementation treats all as [`Sequential]. *)
 
   module Deferred : sig
     include Monad.S
@@ -29,13 +29,13 @@ module type S = sig
       module List : sig
 
         val map
-          :  ?how:Deferred_intf.how
+          :  ?how:how
           -> 'a list
           -> f:('a -> 'b Or_error.t t)
           -> 'b list Or_error.t t
 
         val iter
-          :  ?how:Deferred_intf.how
+          :  ?how:how
           -> 'a list
           -> f:('a -> unit Or_error.t t)
           -> unit Or_error.t t

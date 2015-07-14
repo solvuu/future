@@ -1,6 +1,7 @@
 open Async.Std
 
-module Deferred_intf = Async_kernel.Deferred_intf
+type how = Monad_sequence.how
+
 module Deferred = Deferred
 
 let return = return
