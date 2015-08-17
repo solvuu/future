@@ -153,12 +153,14 @@ module Reader = struct
   type t = Lwt_io.input_channel
 
   let open_file ?buf_len file =
-    Lwt_io.open_file ?buffer_size:buf_len ~mode:Lwt_io.input file
+    let buffer = Option.map buf_len ~f:Lwt_bytes.create in
+    Lwt_io.open_file ?buffer ~mode:Lwt_io.input file
 
   let close = Lwt_io.close
 
   let with_file ?buf_len file ~f =
-    Lwt_io.with_file ?buffer_size:buf_len ~mode:Lwt_io.input file f
+    let buffer = Option.map buf_len ~f:Lwt_bytes.create in
+    Lwt_io.with_file ?buffer ~mode:Lwt_io.input file f
 
   let read_line ic =
     Lwt_io.read_line_opt ic >>| function
