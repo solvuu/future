@@ -5,20 +5,14 @@ authors: ["Solvuu LLC"]
 license: "ISC"
 homepage: "https://github.com/agarwal/future"
 bug-reports: "https://github.com/agarwal/future/issues"
+tags: ["org:solvuu"]
 
 build: [
-  "omake" "-j%{jobs}%"
-    "COMPILE_LIB_STD=true"
-    "COMPILE_LIB_LWT=%{lwt:installed}%"
-    "COMPILE_LIB_ASYNC=%{async:installed}%"
+  ["omake" "-j%{jobs}%"]
 ]
 
 install: [
-  "omake" "install"
-]
-
-remove: [
-  ["omake" "uninstall"]
+  ["omake" "%{name}%.install"]
 ]
 
 depends: [
@@ -29,6 +23,7 @@ depends: [
 ]
 
 depopts: [
+  "async"
   "lwt"
 ]
 

@@ -1,6 +1,6 @@
 open Async.Std
 
-include Future.S
+include Future_unix.Std.FUTURE
   with type 'a Deferred.t = 'a Deferred.t
   and type 'a Pipe.Reader.t = 'a Pipe.Reader.t
   and type Reader.t = Reader.t

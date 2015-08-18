@@ -4,6 +4,8 @@ _build/
 /.omakedb.lock
 /OMakeroot.omc
 /configure.om
-/configure.omc
+*.omc
+/future.install
+/.merlin
 *~
 tmp/
