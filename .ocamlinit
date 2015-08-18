@@ -1,0 +1,16 @@
+let () =
+  try Topdirs.dir_directory (Sys.getenv "OCAML_TOPLEVEL_PATH")
+  with Not_found -> ()
+;;
+#use "topfind";;
+#thread;;
+#require "core cfstream async lwt.preemptive lwt.ppx";;
+
+#directory "_build/lib";;
+#load "future-unix.cma";;
+#load "future-async-unix.cma";;
+#load "future-lwt-unix.cma";;
+
+open Core.Std;;
+open Async.Std;;
+open Future_async_unix.Std;;

@@ -1,5 +1,4 @@
-.ocamlinit
-_build/
+/_build/
 /.omakedb
 /.omakedb.lock
 /OMakeroot.omc
