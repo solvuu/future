@@ -28,9 +28,9 @@ module Deferred = struct
 
   module List = struct
     let fold = List.fold
-    let iter ?(how:_) l ~f = List.iter l ~f
-    let map ?(how:_) l ~f = List.map l ~f
-    let filter ?(how:_) l ~f = List.filter l ~f
+    let iter ?how:_ l ~f = List.iter l ~f
+    let map ?how:_ l ~f = List.map l ~f
+    let filter ?how:_ l ~f = List.filter l ~f
   end
 
   module Or_error = struct
@@ -110,7 +110,7 @@ module Reader = struct
 
   type t = in_channel
 
-  let open_file ?buf_len file =
+  let open_file ?buf_len:_ file =
     In_channel.create file
 
   let close = In_channel.close

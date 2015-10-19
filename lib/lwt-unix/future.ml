@@ -182,7 +182,7 @@ module Reader = struct
     Lwt_io.close ic >>= fun () ->
     return ans
 
-  let file_contents file = with_file file Lwt_io.read
+  let file_contents file = with_file file ~f:Lwt_io.read
 
   let file_lines file =
     Lwt_io.lines_of_file file
