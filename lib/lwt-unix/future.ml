@@ -212,6 +212,9 @@ module Sys = struct
   let is_file ?follow_symlinks x =
     Lwt_preemptive.detach (is_file ?follow_symlinks) x
 
+  let is_directory ?follow_symlinks x =
+    Lwt_preemptive.detach (is_directory ?follow_symlinks) x
+
 end
 
 module Unix = struct
@@ -234,5 +237,27 @@ module Unix = struct
   let rename ~src ~dst = Lwt_unix.rename src dst
 
   let getpid = Unix.getpid
+
+  module Stats = struct
+    type t = Unix.stats = {
+      st_dev   : int;
+      st_ino   : int;
+      st_kind  : Unix.file_kind;
+      st_perm  : file_perm;
+      st_nlink : int;
+      st_uid   : int;
+      st_gid   : int;
+      st_rdev  : int;
+      st_size  : int64;
+      st_atime : float;
+      st_mtime : float;
+      st_ctime : float;
+    }
+  end
+
+  (** We don't call Lwt_unix's [stat] and [lstat] because they don't
+      support large file sizes.  *)
+  let stat x = Lwt_preemptive.detach Unix.stat x
+  let lstat x = Lwt_preemptive.detach Unix.lstat x
 
 end

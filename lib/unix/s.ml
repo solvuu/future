@@ -161,6 +161,11 @@ module type S = sig
       -> string
       -> [ `No | `Unknown | `Yes ] Deferred.t
 
+    val is_directory
+      :  ?follow_symlinks:bool
+      -> string
+      -> [`Yes | `No | `Unknown ] Deferred.t
+
   end
 
   module Unix : sig
@@ -168,6 +173,33 @@ module type S = sig
     val getcwd : unit -> string Deferred.t
     val rename : src:string -> dst:string -> unit Deferred.t
     val getpid : unit -> Pid.t
+
+    module Stats : sig
+
+      type t = Unix.stats = {
+	st_dev   : int;
+	st_ino   : int;
+	st_kind  : Unix.file_kind;
+	st_perm  : file_perm;
+	st_nlink : int;
+	st_uid   : int;
+	st_gid   : int;
+	st_rdev  : int;
+	st_size  : int64;
+	st_atime : float;
+	st_mtime : float;
+	st_ctime : float;
+      }
+      (** We really want this type to be equal to Async's
+	  Unix.Stats.t, which unfortunately differs from Core's. So we
+	  use Core's type because otherwise all implementations of
+	  this signature would have to depend on Async. *)
+
+    end
+
+    val stat : string -> Stats.t Deferred.t
+    val lstat : string -> Stats.t Deferred.t
+
   end
 
 end

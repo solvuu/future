@@ -1,3 +1,4 @@
+open Core.Std
 open Lwt
 
 include Future_unix.Std.FUTURE

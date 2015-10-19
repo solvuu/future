@@ -1,3 +1,4 @@
+open Core.Std
 open Async.Std
 
 type how = Monad_sequence.how
@@ -60,4 +61,30 @@ end
 
 module Sys = Sys
 
-module Unix = Unix
+module Unix = struct
+  type file_perm = Unix.file_perm
+  let getcwd = Unix.getcwd
+  let rename = Unix.rename
+  let getpid = Unix.getpid
+
+  module Stats = struct
+    type t = Core.Std.Unix.stats = {
+      st_dev   : int;
+      st_ino   : int;
+      st_kind  : Core.Std.Unix.file_kind;
+      st_perm  : file_perm;
+      st_nlink : int;
+      st_uid   : int;
+      st_gid   : int;
+      st_rdev  : int;
+      st_size  : int64;
+      st_atime : float;
+      st_mtime : float;
+      st_ctime : float;
+    }
+  end
+
+  let stat x = In_thread.run (fun () -> Core.Std.Unix.stat x)
+  let lstat x = In_thread.run (fun () -> Core.Std.Unix.lstat x)
+
+end

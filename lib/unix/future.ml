@@ -152,8 +152,30 @@ module Sys = struct
   include Sys
   let file_exists x = file_exists x
   let is_file ?follow_symlinks x = is_file ?follow_symlinks x
+  let is_directory ?follow_symlinks x = is_directory ?follow_symlinks x
 end
 
 module Unix = struct
   include Unix
+
+  module Stats = struct
+    type t = Unix.stats = {
+      st_dev   : int;
+      st_ino   : int;
+      st_kind  : Unix.file_kind;
+      st_perm  : file_perm;
+      st_nlink : int;
+      st_uid   : int;
+      st_gid   : int;
+      st_rdev  : int;
+      st_size  : int64;
+      st_atime : float;
+      st_mtime : float;
+      st_ctime : float;
+    }
+  end
+
+  let stat = stat
+  let lstat = lstat
+
 end

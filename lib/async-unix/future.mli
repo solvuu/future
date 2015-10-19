@@ -1,3 +1,4 @@
+open Core.Std
 open Async.Std
 
 include Future_unix.Std.FUTURE
