@@ -7,9 +7,9 @@ let () =
 #require "core cfstream async lwt.preemptive lwt.ppx";;
 
 #directory "_build/lib";;
-#load "future-unix.cma";;
-#load "future-async-unix.cma";;
-#load "future-lwt-unix.cma";;
+#load "future_unix.cma";;
+#load "future_async_unix.cma";;
+#load "future_lwt_unix.cma";;
 
 open Core.Std;;
 open Async.Std;;

@@ -1,23 +1,28 @@
 opam-version: "1.2"
+name: "future"
 version: "dev"
 maintainer: "agarwal1975@gmail.com"
 authors: ["Solvuu LLC"]
 license: "ISC"
 homepage: "https://github.com/agarwal/future"
+dev-repo: "https://github.com/agarwal/future.git"
 bug-reports: "https://github.com/agarwal/future/issues"
 tags: ["org:solvuu"]
 
 build: [
-  ["omake" "-j%{jobs}%"]
+  [make "byte"]
+  [make "native"]
 ]
 
 install: [
-  ["omake" "%{name}%.install"]
+  [make "META"]
+  [make "%{name}%.install"]
 ]
 
 depends: [
   "ocamlfind" {build}
-  "omake" {build}
+  "ocamlbuild" {build}
+  "opam-lib" {build}
   "core" {>= "111.17.00"}
   "cfstream"
 ]
