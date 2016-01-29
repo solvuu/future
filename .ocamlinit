@@ -8,9 +8,9 @@ let () =
 
 #directory "_build/lib";;
 #load "future_unix.cma";;
-#load "future_async_unix.cma";;
-#load "future_lwt_unix.cma";;
+#load "future_async.cma";;
+#load "future_lwt.cma";;
 
 open Core.Std;;
 open Async.Std;;
-open Future_async_unix.Std;;
+open Future_async.Std;;

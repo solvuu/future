@@ -407,13 +407,13 @@ include Make(struct
     };
 
     {
-      Info.name = `Lib "async_unix";
+      Info.name = `Lib "async";
       libs = ["unix"];
       pkgs = ["async"];
     };
 
     {
-      Info.name = `Lib "lwt_unix";
+      Info.name = `Lib "lwt";
       libs = ["unix"];
       pkgs = ["lwt.preemptive"; "lwt.ppx"];
     };
