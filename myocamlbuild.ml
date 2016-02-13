@@ -6,18 +6,21 @@ include Make(struct
       Info.name = `Lib "unix";
       libs = [];
       pkgs = ["core"; "cfstream"];
+      build_if = [];
     };
 
     {
       Info.name = `Lib "async";
       libs = ["unix"];
       pkgs = ["async"];
+      build_if = [`Pkgs_installed];
     };
 
     {
       Info.name = `Lib "lwt";
       libs = ["unix"];
       pkgs = ["lwt.preemptive"; "lwt.ppx"];
+      build_if = [`Pkgs_installed];
     };
   ]
 
