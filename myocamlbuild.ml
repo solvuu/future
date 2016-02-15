@@ -1,6 +1,9 @@
 open Solvuu_build
 
 include Make(struct
+  let name = "future"
+  let version = "dev"
+
   let info = Info.of_list [
     {
       Info.name = `Lib "unix";
