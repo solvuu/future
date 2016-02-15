@@ -2,7 +2,7 @@ open Solvuu_build
 
 include Make(struct
   let name = "future"
-  let version = "dev"
+  let version = "0.1.0"
 
   let info = Info.of_list [
     {

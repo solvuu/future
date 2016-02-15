@@ -1,5 +1,5 @@
 opam-version: "1.2"
-version: "dev"
+version: "0.1.0"
 maintainer: "agarwal1975@gmail.com"
 authors: ["Solvuu LLC"]
 license: "ISC"
