@@ -18,6 +18,8 @@ install: [
   [make "%{name}%.install"]
 ]
 
+remove: []
+
 depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
