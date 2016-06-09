@@ -1,36 +1,35 @@
-open Solvuu_build
+open Printf
+open Solvuu_build.Std
+open Solvuu_build.Util
 
-include Make(struct
-  let name = "future"
-  let version = "dev"
+let project_name = "future"
+let version = "dev"
 
-  let info = Info.of_list [
-    {
-      Info.name = `Lib "unix";
-      libs = [];
-      pkgs = ["core"; "cfstream"];
-      build_if = [];
-    };
+let lib ?findlib_deps ?internal_deps ?ml_files lib_name : Project.item =
+  Project.lib (sprintf "%s_%s" project_name lib_name)
+    ~pkg:(sprintf "%s.%s" project_name lib_name)
+    ~dir:(sprintf "lib/%s" lib_name)
+    ~pack_name:(sprintf "%s_%s" project_name lib_name)
+    ?findlib_deps
+    ?internal_deps
+    ?ml_files
 
-    {
-      Info.name = `Lib "async";
-      libs = ["unix"];
-      pkgs = ["async"];
-      build_if = [`Pkgs_installed];
-    };
+let unix = lib "unix" ~findlib_deps:["core"; "cfstream"]
+let async = lib "async" ~internal_deps:[unix] ~findlib_deps:["async"]
+let lwt = lib "lwt" ~internal_deps:[unix]
+    ~findlib_deps:["lwt.preemptive"; "lwt.ppx"]
 
-    {
-      Info.name = `Lib "lwt";
-      libs = ["unix"];
-      pkgs = ["lwt.preemptive"; "lwt.ppx"];
-      build_if = [`Pkgs_installed];
-    };
-  ]
+let ocamlinit_postfix = [
+  "open Core.Std";
+  "open Async.Std";
+  "open Future_async.Std";
+]
 
-  let ocamlinit_postfix = [
-    "open Future_async.Std";
-  ]
+let optional_pkgs = ["async"; "lwt"]
 
-end)
+let items =
+  [unix;async;lwt] |>
+  List.filter ~f:(fun x -> Project.dep_opts_sat x optional_pkgs)
 
-let () = dispatch()
+;;
+let () = Project.solvuu1 ~project_name ~version ~ocamlinit_postfix items
