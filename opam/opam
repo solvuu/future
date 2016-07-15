@@ -23,7 +23,7 @@ remove: []
 depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "solvuu_build" {build & = "dev"}
+  "solvuu-build" {build & = "dev"}
   "core" {>= "111.17.00"}
   "cfstream"
 ]
