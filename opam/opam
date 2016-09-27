@@ -1,11 +1,11 @@
 opam-version: "1.2"
 version: "dev"
-maintainer: "agarwal1975@gmail.com"
-authors: ["Solvuu LLC"]
+maintainer: "Ashish Agarwal <ashish@solvuu.com>"
+authors: ["Solvuu"]
 license: "ISC"
-homepage: "https://github.com/agarwal/future"
-dev-repo: "https://github.com/agarwal/future.git"
-bug-reports: "https://github.com/agarwal/future/issues"
+homepage: "https://github.com/solvuu/future"
+dev-repo: "https://github.com/solvuu/future.git"
+bug-reports: "https://github.com/solvuu/future/issues"
 tags: ["org:solvuu"]
 
 build: [
@@ -14,7 +14,7 @@ build: [
 ]
 
 install: [
-  [make "META"]
+  [make "_build/META"]
   [make "%{name}%.install"]
 ]
 
