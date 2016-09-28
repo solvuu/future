@@ -17,7 +17,7 @@ let lib ?findlib_deps ?internal_deps ?ml_files lib_name : Project.item =
 let unix = lib "unix" ~findlib_deps:["core"; "cfstream"]
 let async = lib "async" ~internal_deps:[unix] ~findlib_deps:["async"]
 let lwt = lib "lwt" ~internal_deps:[unix]
-    ~findlib_deps:["lwt.preemptive"; "lwt.ppx"]
+    ~findlib_deps:["lwt"; "lwt.preemptive"; "lwt.ppx"]
 
 let ocamlinit_postfix = [
   "open Core.Std";
