@@ -3,7 +3,7 @@ open Solvuu_build.Std
 open Solvuu_build.Util
 
 let project_name = "future"
-let version = "dev"
+let version = "0.2.0"
 
 let lib ?findlib_deps ?internal_deps ?ml_files lib_name : Project.item =
   Project.lib (sprintf "%s_%s" project_name lib_name)
