@@ -1,5 +1,4 @@
 opam-version: "1.2"
-version: "dev"
 maintainer: "Ashish Agarwal <ashish@solvuu.com>"
 authors: ["Solvuu"]
 license: "ISC"
@@ -11,19 +10,14 @@ tags: ["org:solvuu"]
 build: [
   [make "byte"]
   [make "native"]
-]
-
-install: [
   [make "_build/META"]
   [make "%{name}%.install"]
 ]
 
-remove: []
-
 depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "solvuu-build" {build & = "dev"}
+  "solvuu-build" {build}
   "core" {>= "111.17.00"}
   "cfstream"
 ]
