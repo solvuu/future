@@ -11,7 +11,7 @@ build: [
   [make "byte"]
   [make "native"]
   [make "_build/META"]
-  [make "%{name}%.install"]
+  [make "future.install"]
 ]
 
 depends: [
