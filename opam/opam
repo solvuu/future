@@ -18,7 +18,7 @@ depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "solvuu-build" {build & >= "0.1.0"}
-  "core" {>= "111.17.00"}
+  "core" {>= "114.20"}
   "cfstream"
 ]
 

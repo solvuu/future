@@ -9,7 +9,7 @@ module Deferred = struct
   include Monad.Make(struct
     type 'a t = 'a Lwt.t
     let return = Lwt.return
-    let bind = Lwt.bind
+    let bind x ~f = Lwt.bind x f
     let map = `Custom (fun m ~f -> Lwt.map f m)
   end)
 
@@ -23,7 +23,7 @@ module Deferred = struct
 
       let return x = Lwt.return (Ok x)
 
-      let bind m f = Lwt.bind m (function
+      let bind m ~f = Lwt.bind m (function
         | Ok x -> f x
         | Error _ as x -> Lwt.return x
       )
