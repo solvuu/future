@@ -7,7 +7,7 @@ let version = "dev"
 
 let lib ?findlib_deps ?internal_deps ?ml_files lib_name : Project.item =
   Project.lib (sprintf "%s_%s" project_name lib_name)
-    ~pkg:(sprintf "%s.%s" project_name lib_name)
+    ~install:(`Findlib (sprintf "%s.%s" project_name lib_name))
     ~dir:(sprintf "lib/%s" lib_name)
     ~style:(`Pack  (sprintf "%s_%s" project_name lib_name))
     ?findlib_deps
